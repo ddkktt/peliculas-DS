@@ -1,6 +1,29 @@
 
 import uuid
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = "mongodb+srv://iteso:iteso@peliculas.874ntci.mongodb.net/?retryWrites=true&w=majority"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+    database_names = client.list_database_names()
+    print("List of databases:", database_names)
+except Exception as e:
+    print(e)
+
+db = client.test 
+collection = db.movies
+
+# Print out all documents in the 'movies' collection
+for document in collection.find():
+    print(document)
+
 class Movie():
     '''class for movies'''
     def __init__(self,title:str, price: int, description: str, imgURL:str) -> None:
