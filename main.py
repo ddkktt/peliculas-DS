@@ -21,13 +21,14 @@ except Exception as e:
 
 class Movie():
     '''class for movies'''
-    def __init__(self,title:str, price: int, description: str, picture:str) -> None:
+    def __init__(self,title:str, price: int, description: str, picture:str,category:str) -> None:
         '''initializes a movie'''
         self.title:str = title
         self.price:int = price
         self.description:str = description
         self.rentals:int = 0
         self.picture:str = picture #url
+        self.category:str = category
     def __str__(self) -> str:
         return f'\n{self.title}\n{self.price}\n{self.rentals}\n'
     
