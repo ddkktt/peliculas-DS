@@ -17,24 +17,28 @@ try:
 except Exception as e:
     print(e)
 
-db = client.test 
-collection = db.movies
 
-# Print out all documents in the 'movies' collection
-for document in collection.find():
-    print(document)
 
 class Movie():
     '''class for movies'''
-    def __init__(self,title:str, price: int, description: str, imgURL:str) -> None:
+    def __init__(self,title:str, price: int, description: str, picture:str) -> None:
         '''initializes a movie'''
         self.title:str = title
         self.price:int = price
         self.description:str = description
         self.rentals:int = 0
-        self.imgURL:str = imgURL
+        self.picture:str = picture #url
     def __str__(self) -> str:
         return f'\n{self.title}\n{self.price}\n{self.rentals}\n'
+    
+    @staticmethod
+    def get_movies():
+        '''method to retrieve movies from mongo db'''
+        db = client.test 
+        collection = db.movies
+
+        for document in collection.find():
+            print(document)
     
 class User():
     '''class for a user'''
@@ -76,6 +80,8 @@ u = User("david",'iteso', 'dtks')
 a = u.add_account('netflix', 5)
 
 m = Movie("toy story",3,'movie about toy story', 'google.com')
+
+m.get_movies()
 
 u.accounts[0].rent_movie(m)
 
