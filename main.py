@@ -22,9 +22,11 @@ class Movie():
     def __str__(self) -> str:
         '''method to display info aobut movie'''
         return f'\n{self.title}\n{self.price}\n{self.rentals}\n'
+    
     def movie_rented(self):
         '''method that increases counter'''
         self.rentals += 1
+        
     @staticmethod
     def get_movies():
         '''method to retrieve movies from mongo db'''
@@ -32,7 +34,7 @@ class Movie():
         collection = db.movies
         for document in collection.find():
             print(document)
-            
+
 class Admin():
     '''class that can check analytics of movies'''
     def __init__(self) -> None:
@@ -66,6 +68,10 @@ class User():
         '''adds and links an account to a user'''
         a = Account(name, balance)
         self.accounts.append(a)
+
+    def get_accounts(self):
+        '''returns a users accounts'''
+        return self.accounts
     
     
 class Account(User):
@@ -86,9 +92,13 @@ class Account(User):
             self.balance -= movie.price
             movie.movie_rented()
             self.rented_movies.append(movie)
+    
     def increase_balance(self, amount:int):
         '''method to modify balance by providing amount'''
         self.balance += amount
+    def get_balance(self):
+        '''returns the balance of an account'''
+        return self.balance
         
 
 
