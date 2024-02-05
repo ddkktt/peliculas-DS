@@ -26,7 +26,7 @@ class Movie():
     def movie_rented(self):
         '''method that increases counter'''
         self.rentals += 1
-        
+
     @staticmethod
     def get_movies():
         '''method to retrieve movies from mongo db'''
@@ -65,9 +65,10 @@ class User():
         self.accounts:[Account] = []
 
     def add_account(self,name:str,balance:int):
-        '''adds and links an account to a user'''
+        '''adds and links an account to a user and returns the new account'''
         a = Account(name, balance)
         self.accounts.append(a)
+        return a
 
     def get_accounts(self):
         '''returns a users accounts'''
