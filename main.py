@@ -1,6 +1,6 @@
 
 import uuid
-
+from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -8,6 +8,8 @@ uri = "mongodb+srv://iteso:iteso@peliculas.874ntci.mongodb.net/?retryWrites=true
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
+db = client.test 
+collection = db.movies
 
 class Movie():
     '''class for movies'''
@@ -21,19 +23,56 @@ class Movie():
         self.category:str = category
     def __str__(self) -> str:
         '''method to display info aobut movie'''
-        return f'\n{self.title}\n{self.price}\n{self.rentals}\n'
+        return f'\ntitle: {self.title}\nprice: {self.price}\nrentals: {self.rentals}\n'
     
-    def movie_rented(self):
+    def movie_rented(self, movie_id):
         '''method that increases counter'''
         self.rentals += 1
+        rentals = {'rentals': self.rentals}
+        self.update_movie(movie_id, rentals)
 
     @staticmethod
     def get_movies():
         '''method to retrieve movies from mongo db'''
-        db = client.test 
-        collection = db.movies
         for document in collection.find():
             print(document)
+    @staticmethod
+    def get_movie_by_id(movie_id:str):
+        '''method to retrieve movie given an id as a string, returns the movie as a movie object'''
+        try:
+            movie_id = ObjectId(movie_id)
+        except:
+            return None  
+
+        query = {"_id": movie_id}
+        movie_data = collection.find_one(query)
+
+        if movie_data:
+            movie = Movie(
+                title=movie_data.get("title"),
+                description=movie_data.get("description"),
+                picture=movie_data.get("picture"),
+                price=movie_data.get("price"),
+                #rented=movie_data.get("rented"),
+            )
+            return movie
+        else:
+            return None
+        
+    @staticmethod
+    def update_movie(movie_id, update_data):
+        try:
+            movie_id = ObjectId(movie_id)
+        except:
+            return False 
+
+        result = collection.update_one({"_id": movie_id}, {"$set": update_data})
+
+        if result.modified_count > 0:
+            return True  
+        else:
+            return False
+
 
 class Admin():
     '''class that can check analytics of movies'''
@@ -109,7 +148,11 @@ a = u.add_account('netflix', 5)
 
 m = Movie("toy story",3,'movie about toy story', 'google.com')
 
+print(m)
+
 m.get_movies()
+
+print(m.get_movie_by_id('65bd950e95570faf8b423a17'))
 
 admin = Admin()
 
