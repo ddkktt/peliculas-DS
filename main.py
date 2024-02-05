@@ -9,19 +9,13 @@ uri = "mongodb+srv://iteso:iteso@peliculas.874ntci.mongodb.net/?retryWrites=true
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-    database_names = client.list_database_names()
-    print("List of databases:", database_names)
-except Exception as e:
-    print(e)
+
 
 
 
 class Movie():
     '''class for movies'''
-    def __init__(self,title:str, price: int, description: str, picture:str,category:str) -> None:
+    def __init__(self,title:str, price: int, description: str, picture:str, category:str= None) -> None:
         '''initializes a movie'''
         self.title:str = title
         self.price:int = price
@@ -30,17 +24,38 @@ class Movie():
         self.picture:str = picture #url
         self.category:str = category
     def __str__(self) -> str:
+        '''method to display info aobut movie'''
         return f'\n{self.title}\n{self.price}\n{self.rentals}\n'
-    
+    def movie_rented(self):
+        '''method that increases counter'''
+        self.rentals += 1
     @staticmethod
     def get_movies():
         '''method to retrieve movies from mongo db'''
         db = client.test 
         collection = db.movies
-
         for document in collection.find():
             print(document)
+class Admin():
+    '''class that can check analytics of movies'''
+    def __init__(self) -> None:
+        pass
     
+    def check_earnings(self):
+        total_earnings = 0
+        '''method to retrieve movies from mongo db'''
+        db = client.test 
+        collection = db.movies
+        for document in collection.find():
+            rentals = document.get('rentals')
+            price = document.get('price')
+            if(rentals):
+                total_earnings = total_earnings + (rentals * price)
+                
+        return total_earnings
+
+
+
 class User():
     '''class for a user'''
     def __init__(self, username:str, password:str, email:str) -> None:
@@ -71,7 +86,7 @@ class Account(User):
         '''method to rent a movie'''
         if(self.balance>movie.price):
             self.balance -= movie.price
-            movie.rentals += 1
+            movie.movie_rented()
             self.rented_movies.append(movie)
         
 
@@ -83,6 +98,10 @@ a = u.add_account('netflix', 5)
 m = Movie("toy story",3,'movie about toy story', 'google.com')
 
 m.get_movies()
+
+admin = Admin()
+
+admin.check_earnings()
 
 u.accounts[0].rent_movie(m)
 
