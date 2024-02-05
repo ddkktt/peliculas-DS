@@ -9,10 +9,6 @@ uri = "mongodb+srv://iteso:iteso@peliculas.874ntci.mongodb.net/?retryWrites=true
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 
-
-
-
-
 class Movie():
     '''class for movies'''
     def __init__(self,title:str, price: int, description: str, picture:str, category:str= None) -> None:
@@ -36,6 +32,7 @@ class Movie():
         collection = db.movies
         for document in collection.find():
             print(document)
+            
 class Admin():
     '''class that can check analytics of movies'''
     def __init__(self) -> None:
@@ -51,7 +48,7 @@ class Admin():
             price = document.get('price')
             if(rentals):
                 total_earnings = total_earnings + (rentals * price)
-                
+
         return total_earnings
 
 
@@ -69,6 +66,7 @@ class User():
         '''adds and links an account to a user'''
         a = Account(name, balance)
         self.accounts.append(a)
+    
     
 class Account(User):
     '''class for account'''
@@ -88,6 +86,9 @@ class Account(User):
             self.balance -= movie.price
             movie.movie_rented()
             self.rented_movies.append(movie)
+    def increase_balance(self, amount:int):
+        '''method to modify balance by providing amount'''
+        self.balance += amount
         
 
 
